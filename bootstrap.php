@@ -1,12 +1,20 @@
 <?php
-// bootstrap.php
+use Doctrine\ORM\Tools\Setup;
 
-require_once "entities/User.php";
-require_once "entities/Product.php";
-require_once "entities/Bug.php";
+require_once "vendor/autoload.php";
 
-if (!class_exists("Doctrine\Common\Version", false)) {
-    require_once "bootstrap_doctrine.php";
-}
+// Create a simple "default" Doctrine ORM configuration for Annotation Mapping
+$isDevMode = true;
+$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), $isDevMode);
+// or if you prefer yaml or XML
+//$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
+//$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
 
-require_once "repositories/BugRepository.php";
+// database configuration parameters
+$conn = array(
+    'driver' => 'pdo_sqlite',
+    'path' => __DIR__ . '/db.sqlite',
+);
+
+// obtaining the entity manager
+$entityManager = \Doctrine\ORM\EntityManager::create($conn, $config);
